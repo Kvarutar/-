@@ -214,20 +214,208 @@ document.addEventListener('DOMContentLoaded', function(){
         };
     }, false);
 
+    //валидация отдельной формы
+    let form = document.querySelector('#consultation_form'),
+        button = document.querySelector('.button__consultation');
+
+    console.log(form);
+    console.log(button);
+
+    let FormFields = form.querySelectorAll('.feed-form__field');
+
+        function addError(item, massage, count){
+            let error = document.createElement('div');
+            error.className = 'error';
+            error.classList.add(`error${count}`);
+            error.innerHTML = massage;
+            item.after(error);
+        }
+
+        button.addEventListener('click', function(e){
+            e.preventDefault();
+            let errors = form.querySelectorAll('.error');
+    
+            errors.forEach(item => {
+                item.remove();
+            })
+            let count = 0;
+            FormFields.forEach(item => {
+                count++;
+                if (!item.value) {
+                    let massage = 'Поле не может быть пустым';
+                    addError(item, massage, count);
+                }else{
+                    validationResult[count-1] = true;
+                }
+            })
+            /* if (validationResult[0] && validationResult[1] && validationResult[2]) {
+                form.submit();
+            } */
+        });
+
+        let formName  = form.querySelector('.name'),
+            formPhone = form.querySelector('.phone'),
+            formEmail = form.querySelector('.email'),
+            validationResult = [false, false, false]
+
+        formName.addEventListener('blur', function(){
+            let error = form.querySelector('.error1');
+            if (!formName.value) {
+                if (error) {error.remove();}
+                let massage = 'Поле не может быть пустым';
+                addError(formName, massage, 1);
+            }
+            else if (formName.value.length < 2){
+                if (error) {error.remove();}
+                massage = "Ваше имя должно быть больше 2 символов"
+                addError(formName, massage, 1)
+            } else if (!isNaN(formName.value)){
+                if (error) {error.remove();}
+                massage = "Ваше имя должно состоять из букв"
+                addError(formName, massage, 1)
+            }
+            else if(!formName.value || error != null) {
+                error.remove();
+                validationResult[0] = true;
+            }
+        })
+
+        formPhone.addEventListener('blur', function(){
+            if (formPhone.value != '') {
+                let error = form.querySelector('.error2');
+                if (error != null){
+                    error.remove();
+                    validationResult[1] = true;
+                }
+            }
+        })
+
+        formEmail.addEventListener('blur', function(){
+            if (formEmail.value != '') {
+                let error = form.querySelector('.error3');
+                if (error != null){
+                    error.remove();
+                    validationResult[2] = true;
+                }
+            }
+        })
+
     //отправка формы
-    let forms = document.querySelectorAll('form')
+    /* let forms = document.querySelectorAll('form')
 
     forms.forEach(form => {
         form.addEventListener('submit', function(event){//лучше отслеживать когда сама форма отправляется
             event.preventDefault();
             let request = new XMLHttpRequest();
-            request.open('POST', '../mailer/smart.php');
+            request.open('POST', 'src/server.php');
             request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
             let formData = new FormData(form);
             request.send(formData);
         })
-    });
+    }); */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* form.addEventListener('submit', function(event){//лучше отслеживать когда сама форма отправляется
+        event.preventDefault();
+
+        let request = new XMLHttpRequest();
+        request.open('POST', 'server.php');
+        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        let formData1 = new FormData(form);
+        let obj = {};
+        formData1.forEach(function(value, key){
+            obj[key] = value;
+            console.log(key);
+        });
+        let json = JSON.stringify(obj);
+        request.send(json);
+
+        request.addEventListener('readystatechange', function(){
+            if (request.readyState < 4){
+                statusMasage.textContent = message.loading;
+            } else if (request.readyState === 4 && request.status == 200){
+                statusMasage.textContent = message.success;
+            } else {
+                statusMasage.textContent = message.failure;
+            }
+        });
+
+        for (let i = 0; i < input.length; i++){
+            input[i].value = '';
+        }
+    }); */
+
+    forms = document.querySelectorAll('.feed-form')
+    
+    forms.forEach(contactForm => {
+        contactForm.addEventListener('submit', function(event){
+            event.preventDefault();
+    
+            let request = new XMLHttpRequest();
+            request.open('POST', 'server.php');
+            request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            //request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    
+            let formData = new FormData(contactForm);
+            
+            function ref (){
+                return new Promise((resolve, reject) => {
+                    let obj = {};
+                    formData.forEach(function(value, key){
+                        obj[key] = value;
+                        console.log(key);
+                    });
+                    let json = JSON.stringify(obj);
+                    request.send(json);
+                    
+                    request.addEventListener('readystatechange', function(){
+                        if (request.readyState < 4){
+                            //statusMasage.textContent = message.loading;
+                            resolve();
+                        } else if (request.readyState === 4 && request.status == 200){
+                            //statusMasage.textContent = message.success;
+                            resolve();
+                        } else {
+                            //statusMasage.textContent = message.failure;
+                            reject();
+                        }
+                    });
+                });
+            };
+            ref()
+            .then(()=>{})
+            .then(()=>{})
+            .catch(()=>{})
+    
+        });
+    })
+    
 });
 
 
