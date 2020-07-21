@@ -16,34 +16,6 @@ $(document).ready(function(){
     });
 
     $("input[name=phone]").mask("+7(999) 999-99-99");
-
-    /* $('#consultation form').validate({
-        rules: {
-            name: {
-                required: true,
-                minlenght: 2
-            },
-            phone: "required",
-            email: {
-                required: true,
-                email: true
-            }
-        },
-        messages: {
-            name: {
-                required: "Пожалуйста, скажите нам ваше имя",
-                minlength: jQuery.validator.format("Не меньше {0} символов!")
-            },
-            phone: "Пожалуйста, введите свой номер телефона",
-            email: {
-              required: "Введите свою почту",
-              email: "Введите корректный адрес почты"
-            }
-          }
-    });
-    $('#order form').validate();
-    $('#consultation_form').validate(); */
-    
 });
 
 //табы
@@ -109,52 +81,6 @@ document.addEventListener('DOMContentLoaded', function(){
         });
     }
 
- /*   let consultationButtons = document.querySelectorAll('.promo button'),
-        buyButtons = document.querySelectorAll('.button_price')
-        consultationForm = document.getElementById('consultation'),
-        orderForm = document.getElementById('order'),
-        thanksForm = document.getElementById('thanks'),
-        overlay = document.querySelector('.overlay'),
-        submitButton = document.querySelectorAll('.button_submit'),
-        close = document.querySelectorAll('.modal__close'),
-        catalogItemSubtitle = document.querySelectorAll('.catalog-item__subtitle'),
-        modalDescr = document.querySelectorAll('.modal__descr');
-    
-    consultationButtons.forEach(item => {
-        item.addEventListener('click', function(event){
-            overlay.classList.add('overlay_active');
-            consultationForm.classList.add('modal_active');
-            close[1].addEventListener('click', function(){
-                overlay.classList.remove('overlay_active');
-                consultationForm.classList.remove('modal_active');
-            });
-        })
-    })
-
-    submitButton.forEach(element => {
-        element.addEventListener('click', function(event){
-            overlay.classList.add('overlay_active');
-            thanksForm.classList.add('modal_active');
-            close[0].addEventListener('click', function(){
-                overlay.classList.remove('overlay_active');
-                thanksForm.classList.remove('modal_active');
-            })
-        })
-    }); 
-
-    for(let i=0; i < buyButtons.length; i++){
-        buyButtons[i].addEventListener('click', function(event){
-            modalDescr[2].innerHTML = catalogItemSubtitle[i].innerHTML;
-            console.log(modalDescr);
-            overlay.classList.add('overlay_active');
-            orderForm.classList.add('modal_active');
-            close[2].addEventListener('click', function(){
-                overlay.classList.remove('overlay_active');
-                orderForm.classList.remove('modal_active');
-            });
-        });
-    } */
-
     //модальные окна
 
     !function(e){"function"!=typeof e.matches&&(e.matches=e.msMatchesSelector||e.mozMatchesSelector||e.webkitMatchesSelector||function(e){for(var t=this,o=(t.document||t.ownerDocument).querySelectorAll(e),n=0;o[n]&&o[n]!==t;)++n;return Boolean(o[n])}),"function"!=typeof e.closest&&(e.closest=function(e){for(var t=this;t&&1===t.nodeType;){if(t.matches(e))return t;t=t.parentNode}return null})}(window.Element.prototype);
@@ -173,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function(){
             /* Предотвращаем стандартное действие элемента. Так как кнопку разные
                 люди могут сделать по-разному. Кто-то сделает ссылку, кто-то кнопку.
                 Нужно подстраховаться. */
-            //e.preventDefault();
+            e.preventDefault();
             /* При каждом клике на кнопку мы будем забирать содержимое атрибута data-modal
                 и будем искать модальное окно с таким же атрибутом. */
             let modalId = this.getAttribute('data-modal'),
@@ -190,9 +116,7 @@ document.addEventListener('DOMContentLoaded', function(){
             }
 
         //валидация
-
         let FormFields = modalElem.querySelectorAll('.feed-form__field');
-
 
         function addError(item, massage, count){
             let error = document.createElement('div');
@@ -215,22 +139,21 @@ document.addEventListener('DOMContentLoaded', function(){
                 if (!item.value) {
                     let massage = 'Поле не может быть пустым';
                     addError(item, massage, count);
+                }else{
+                    validationResult[count-1] = true;
                 }
             })
-            if (NameValidationResult && PhoneValidationResult && MailValidationResult) {
+            /* if (validationResult[0] && validationResult[1] && validationResult[2]) {
                 form.submit();
-            }
+            } */
         });
 
         let formName  = modalElem.querySelector('.name'),
             formPhone = modalElem.querySelector('.phone'),
             formEmail = modalElem.querySelector('.email'),
-            NameValidationResult = false,
-            PhoneValidationResult = false,
-            MailValidationResult = false;
+            validationResult = [false, false, false]
 
         formName.addEventListener('blur', function(){
-            console.log(formName.value);
             let error = modalElem.querySelector('.error1');
             if (!formName.value) {
                 if (error) {error.remove();}
@@ -238,57 +161,42 @@ document.addEventListener('DOMContentLoaded', function(){
                 addError(formName, massage, 1);
             }
             else if (formName.value.length < 2){
-                error.remove();
+                if (error) {error.remove();}
                 massage = "Ваше имя должно быть больше 2 символов"
                 addError(formName, massage, 1)
             } else if (!isNaN(formName.value)){
-                error.remove();
+                if (error) {error.remove();}
                 massage = "Ваше имя должно состоять из букв"
                 addError(formName, massage, 1)
             }
             else if(!formName.value || error != null) {
                 error.remove();
-                NameValidationResult = true;
+                validationResult[0] = true;
             }
         })
 
         formPhone.addEventListener('blur', function(){
-            if (!item.value) {
+            if (formPhone.value != '') {
                 let error = modalElem.querySelector('.error2');
                 if (error != null){
                     error.remove();
-                    PhoneValidationResult = true;
+                    validationResult[1] = true;
                 }
             }
         })
 
         formEmail.addEventListener('blur', function(){
-            if (!item.value) {
+            if (formEmail.value != '') {
                 let error = modalElem.querySelector('.error3');
                 if (error != null){
                     error.remove();
-                    MailValidationResult = true;
+                    validationResult[2] = true;
                 }
             }
         })
-
-        
-
-            /* if (modalId == '3') {
-                document.querySelector('.modal[data-modal="1"]').classList.remove('modal_active');
-            } */
-
-            /* if (item.classList.contains('button_price')) {
-                console.log(modalButtons.indexOf(item));
-                modalDescr[2].innerHTML = catalogItemSubtitle[modalButtons.indexOf(item)].innerHTML;
-            } */
-            /* for(let i=0; i < buyButtons.length; i++){
-                buyButtons[i].addEventListener('click', function(event){
-                    modalDescr[2].innerHTML = catalogItemSubtitle[i].innerHTML;
-                });
-            } */
         }); // end click
     }); // end foreach
+
 
     closeButtons.forEach(function(item){
         item.addEventListener('click', function(e) {
@@ -305,43 +213,21 @@ document.addEventListener('DOMContentLoaded', function(){
             document.querySelector('.overlay_active').classList.remove('overlay_active');
         };
     }, false);
-    /* overlay.addEventListener('click', function(event) {
-        let target = event.target;
-        console.log(typeof(target));
-        if (!(target.classList.contains('modal'))||!(target.classList.contains('button'))){
-            document.querySelector('.modal_active').classList.remove('modal_active');
-            this.classList.remove('overlay_active');
-        };
-    }); */
 
-    //валидация
-    /* let consultationForm = document.querySelector('.consultation .feed-form'),
-        consultationFormButton = consultationForm.querySelector('button'),
-        consultationFormFields = consultationForm.querySelectorAll('.feed-form__field'),
-        overlayForm = document.querySelector('.overlay .feed-form'),
-        overlayFormButton = overlayForm.querySelector('button'),
-        order = document.getElementById('order'),
-        orderForm = order.querySelector('.feed-form'),
-        orderFormButton = orderForm.querySelector('button');
+    //отправка формы
+    let forms = document.querySelectorAll('form')
 
-    consultationForm.addEventListener('submit', function(e){
-        e.preventDefault();
-        let errors = consultationForm.querySelectorAll('.error');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(event){//лучше отслеживать когда сама форма отправляется
+            event.preventDefault();
+            let request = new XMLHttpRequest();
+            request.open('POST', '../mailer/smart.php');
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-        errors.forEach(item => {
-            item.remove();
+            let formData = new FormData(form);
+            request.send(formData);
         })
-
-        consultationFormFields.forEach(item => {
-            if (!item.value) {
-                console.log(`${item} is blank`);
-                let error = document.createElement('div');
-                error.className = 'error';
-                error.innerHTML = 'Поле не может быть пустым';
-                item.after(error);
-            }
-        })
-    }); */
+    });
 });
 
 

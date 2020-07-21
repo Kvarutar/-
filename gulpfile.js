@@ -12,7 +12,8 @@ gulp.task('server', function() {
             baseDir: "src"
         },
         browser: '/Applications/Google Chrome.app'
-    });
+        }
+    );
 
     gulp.watch("src/*.html").on('change', browserSync.reload);
 });
